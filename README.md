@@ -13,11 +13,20 @@ With the above goals in mind, write a CLI tool where the user can give sets of l
 
 ## Strategy
 
-'words.txt' contains all of the words we are going to search. We're going to have a simple CLI, that on startup, we create a hash table of the words. Before we do this, we need to take each word and canonicalise it by creating a sorted set of the characters. This sorted set (as a string) is used as the key and the word itself is the value. 
+'words.txt' contains all of the words we are going to search. We're going to have a simple CLI, that on startup, we create a hash table of the words. We need to take each word and canonicalise it by creating a sorted set of the characters from it. This sorted set (as a string) is used as the key into the hashmap and the word itself is the value. 
 
-Note that my hash-table implementation is slightly different to most because it can store objects with the same key. This may be is counterproductive.
+This reduces the complexity of search significantly because all sub-words of *S* will be sorted into the same bucket as the others. We than have to search the bucket for all possible words with the sorted set key and return their values.
 
-This reduces the complexity significantly because all sub-words of *S* will be sorted into the same bucket as the others. We than have to use 
+Note that my hash-table implementation is slightly different to most because it can store objects with the same key. This may be is counterproductive in general, but it seems to work okay in the scenario. You could do something similar with a map[string][]string in go. 
+
+## Usage
+
+Prerequiste: Go Installed
+
+1. Clone the repo
+2. Run main from root `go run main.go`
+3. Type in a sequence of characters
+4. See the words made up of the set of these characters
 
 ## References 
 - The Algorithm Design Manual (Steven S. Skiena)
