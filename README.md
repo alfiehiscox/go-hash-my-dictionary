@@ -1,15 +1,15 @@
 # Exploration of Hashing and Hash Tables
 
 ## Goals
-- Implement a Hash Table from scratch (closed-addressed and open-addressed)
+- Implement a Hash Table from scratch
 - Learning about hash functions
 - Use said Hash Table in a project like scenario
 
 ## Project 
 
-*Canoicalisation* project - Given a list of dictionary words *D*, and a set of letters *S* find all the words in *D* that can be made out of letters in *S*. Use a canonical forms for each word and hashing in order to make this search efficient. As a follow up question, which set of *k* letters can be used to make the *most* dictionary words?
+*Canoicalisation* project - Given a list of dictionary words *D*, and a set of letters *S* find all the words in *D* that can be made out of letters in *S*. Use a canonical form for each word and a hash table in order to make this search efficient. As a follow up question, which set of *k* letters can be used to make the *most* dictionary words?
 
-With the above goals in mind, write a CLI tool where the user can give sets of letters and will receive the words that can be made by them. Addiontally, given a max command and a *k* value return the set of *k* letters that makes the *most* dictionary words. 
+With the above goals in mind, write a CLI game where the user can give sets of letters and will receive the words that can be made by them. Addiontally, given a max command and a *k* value return the set of *k* letters that makes the *most* dictionary words. 
 
 ## Strategy
 
@@ -17,7 +17,7 @@ With the above goals in mind, write a CLI tool where the user can give sets of l
 
 This reduces the complexity of search significantly because all sub-words of *S* will be sorted into the same bucket as the others. We than have to search the bucket for all possible words with the sorted set key and return their values.
 
-Note that my hash-table implementation is slightly different to most because it can store objects with the same key. This may be is counterproductive in general, but it seems to work okay in the scenario. You could do something similar with a map[string][]string in go. 
+Note that my hash-table implementation is slightly different to most because it can store objects with the same key. This may be is counterproductive in general, but seems to work okay in the scenario. You could do something similar with a map[string][]string in go. 
 
 ## Usage
 
