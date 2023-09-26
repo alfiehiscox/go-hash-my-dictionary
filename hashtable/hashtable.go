@@ -57,6 +57,20 @@ func (ll *linkedList[T]) search(key string) (T, bool) {
 	return *new(T), false
 }
 
+// search for all nodes with the same 'key' but different values.
+// returns empty list if none.
+func (ll *linkedList[T]) searchAll(key string) []T {
+	var xs []T
+	tmp := ll.head
+	for tmp != nil {
+		if tmp.key == key {
+			xs = append(xs, tmp.data)
+		}
+		tmp = tmp.next
+	}
+	return xs
+}
+
 // delete node with given key. Return if successful. O(n) complexity
 func (ll *linkedList[T]) delete(key string) bool {
 	// fmt.Println("delete(" + key + ")")
@@ -109,6 +123,12 @@ func (ht HashTable[T]) Search(key string) (T, bool) {
 	return ll.search(key)
 }
 
+func (ht HashTable[T]) SearchAll(key string) []T {
+	hash := hash(key, len(ht))
+	ll := ht[hash]
+	return ll.searchAll(key)
+}
+
 // Insert(key, value) adds a pair to the HashTable.
 func (ht HashTable[T]) Insert(key string, value T) {
 	hash := hash(key, len(ht))
@@ -132,6 +152,22 @@ func (ht HashTable[T]) String() string {
 	}
 	builder.WriteString("]")
 	return builder.String()
+}
+
+func (ht HashTable[T]) AverageBucketLength() float64 {
+	var sum float64
+	for _, ll := range ht {
+		sum += float64(ll.size)
+	}
+	return sum / float64(len(ht))
+}
+
+func (ht HashTable[T]) Size() int {
+	var sum int
+	for _, ll := range ht {
+		sum += ll.size
+	}
+	return sum
 }
 
 // Simple hashing function with assumed ASCCI characters.
