@@ -7,7 +7,7 @@ import (
 )
 
 // Node is the individual elements of the LinkedList
-type node[T comparable] struct {
+type node[T any] struct {
 	key  string
 	data T
 	next *node[T]
@@ -24,14 +24,35 @@ func (n *node[T]) String() string {
 }
 
 // Doubly LinkedList has value of type 'T' and key of type 'string'
-type linkedList[T comparable] struct {
+type linkedList[T any] struct {
 	head *node[T]
 	size int
 }
 
-// insert at the head of the list. O(1) complexity.
+// Check for item in list. If there update, other add to end of list. O(n) worst case.
 func (ll *linkedList[T]) insert(key string, data T) {
 	// fmt.Println("insert(" + key + ")")
+	if ll.head == nil {
+		ll.head = &node[T]{key: key, data: data, next: nil, prev: nil}
+	} else {
+		tmp := ll.head
+		for tmp != nil {
+			if tmp.key == key {
+				tmp.data = data
+				return
+			}
+			tmp = tmp.next
+		}
+		tmp = &node[T]{key: key, data: data, next: nil, prev: nil}
+		tmp2 := ll.head
+		tmp2.prev = tmp
+		ll.head = tmp
+		tmp.next = tmp2
+	}
+	ll.size++
+}
+
+func (ll *linkedList[T]) insertHead(key string, data T) {
 	tmp := &node[T]{key: key, data: data, next: nil, prev: nil}
 	if ll.head == nil {
 		ll.head = tmp
@@ -107,10 +128,10 @@ func (ll *linkedList[T]) String() string {
 }
 
 // HashTable[T] is an array of linkedList[T]
-type HashTable[T comparable] []linkedList[T]
+type HashTable[T any] []linkedList[T]
 
 // New creates a HashTable of size n, meaning the there are n buckets, not n possible slots.
-func New[T comparable](n int) HashTable[T] {
+func New[T any](n int) HashTable[T] {
 	ht := make(HashTable[T], n)
 	return ht
 }
@@ -123,16 +144,23 @@ func (ht HashTable[T]) Search(key string) (T, bool) {
 	return ll.search(key)
 }
 
-func (ht HashTable[T]) SearchAll(key string) []T {
+func (ht HashTable[T]) SearchAll(key string) ([]T, bool) {
 	hash := hash(key, len(ht))
 	ll := ht[hash]
-	return ll.searchAll(key)
+	return ll.searchAll(key), true
 }
 
-// Insert(key, value) adds a pair to the HashTable.
+// Insert(key, value) adds a pair to the HashTable, updating as nesscary.
 func (ht HashTable[T]) Insert(key string, value T) {
 	hash := hash(key, len(ht))
 	ht[hash].insert(key, value)
+}
+
+// InsertAll(key, value) adds a pair to the front of the bucket,
+// doesn't check for duplicates therefore use with SearchAll()
+func (ht HashTable[T]) InsertAll(key string, value T) {
+	hash := hash(key, len(ht))
+	ht[hash].insertHead(key, value)
 }
 
 // Delete(key) removes a pair from the HashTable.
